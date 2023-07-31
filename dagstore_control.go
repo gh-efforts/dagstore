@@ -3,6 +3,7 @@ package dagstore
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/ipfs/go-datastore"
 )
@@ -76,7 +77,7 @@ func (d *DAGStore) control() {
 
 			// skip initialization if shard was registered with lazy init, and
 			// respond immediately to waiter.
-			if s.lazy {
+			if s.lazy || os.Getenv("BOOST_DISABLE_EAGER_INIT") == "1" {
 				log.Debugw("shard registered with lazy initialization", "shard", s.key)
 				// waiter will be nil if this was a restart and not a call to Register() call.
 				if tsk.waiter != nil {
